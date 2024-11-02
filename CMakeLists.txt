@@ -35,7 +35,7 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(TLC59116lib TLC59116lib.cpp )
+add_executable(TLC59116lib main.cpp TLC59116.cpp) # Add TLC59116.cpp to the executable
 
 pico_set_program_name(TLC59116lib "TLC59116lib")
 pico_set_program_version(TLC59116lib "0.1")
@@ -44,19 +44,22 @@ pico_set_program_version(TLC59116lib "0.1")
 pico_enable_stdio_uart(TLC59116lib 1)
 pico_enable_stdio_usb(TLC59116lib 0)
 
+# pico UART pins changed to 16 and 17
+target_compile_definitions(TLC59116lib PRIVATE
+	PICO_DEFAULT_UART_TX_PIN=16
+	PICO_DEFAULT_UART_RX_PIN=17
+	)
 # Add the standard library to the build
 target_link_libraries(TLC59116lib
-        pico_stdlib)
-
+    pico_stdlib
+    hardware_i2c # Link the I2C hardware library
+)
 # Add the standard include files to the build
 target_include_directories(TLC59116lib PRIVATE
   ${CMAKE_CURRENT_LIST_DIR}
 )
 
-# Add any user requested libraries
-target_link_libraries(TLC59116lib 
-        hardware_i2c
-        )
+
 
 pico_add_extra_outputs(TLC59116lib)
 

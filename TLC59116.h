@@ -23,8 +23,8 @@ class TLC59116
 public:
 	TLC59116(uint8_t address, uint8_t resetPin); // Constructor. Set the I2C address and the RESET pin
 
-	void begin();								 // Initialize the I2C bus to interface with the TLC59116
-	void setPWM(uint8_t channel, uint8_t value); // Set the PWM value of a single channel
+	void begin(); // Initialize the I2C bus to interface with the TLC59116
+
 	// void setAllPWM(uint8_t value);					 // Set the PWM value of all channels
 	// void setChannel(uint8_t channel, uint8_t value); // Set the output value of a single channel
 	// void setAllChannels(uint8_t value);				 // Set the output value of all channels
