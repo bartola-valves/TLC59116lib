@@ -11,13 +11,19 @@
  * 			Library for the TLC59116 I2C LED driver
  * 			https://www.ti.com/lit/ds/symlink/tlc59116.pdf
  *
+ * @note
+ * 	Adapted from https://github.com/robs-code/TLC59116-Arduino by Robert Mawrey
+ *	Existing code uploaded in Github above was incomplete and had errors.
  *
- * @param  i2c_port: I2C port number
- * @param  sda_pin: SDA pin number
- * @param  scl_pin: SCL pin number
- *
- *
+ *	Modified by: 	Alejandro Moglia / @bartola-valves
+ *	Modified on: 	02 November 2024
+ *	Modified for: 	Raspberry Pi Pico SDK
+ *	Version: 		0.1
+ *	License: 		MIT
+ *	Version history:
+ *		0.1: Initial version. Library fixed and adapted for Raspberry Pi Pico SDK. No enhancements yet.
  */
+
 class TLC59116
 {
 public:
