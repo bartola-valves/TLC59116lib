@@ -18,10 +18,12 @@
  *	Modified by: 	Alejandro Moglia / @bartola-valves
  *	Modified on: 	02 November 2024
  *	Modified for: 	Raspberry Pi Pico SDK
- *	Version: 		0.1
+ *	Version: 		0.2
+ *	Date:			07 November 2024
  *	License: 		MIT
  *	Version history:
  *		0.1: Initial version. Library fixed and adapted for Raspberry Pi Pico SDK. No enhancements yet.
+ *		0.2: Library working
  */
 
 class TLC59116
@@ -29,13 +31,7 @@ class TLC59116
 public:
 	TLC59116(uint8_t address, uint8_t resetPin); // Constructor. Set the I2C address and the RESET pin
 
-	void begin(); // Initialize the I2C bus to interface with the TLC59116
-
-	// void setAllPWM(uint8_t value);					 // Set the PWM value of all channels
-	// void setChannel(uint8_t channel, uint8_t value); // Set the output value of a single channel
-	// void setAllChannels(uint8_t value);				 // Set the output value of all channels
-	// void update();									 // Update the output values of the channels
-
+	void begin();											  // Initialize the I2C bus to interface with the TLC59116
 	void LEDOn(uint8_t LED);								  // Turn on a single LED
 	void LEDOff(uint8_t LED);								  // Turn off a single LED
 	void LEDPWM(uint8_t LED);								  // Set a single LED to PWM mode
