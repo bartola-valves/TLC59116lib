@@ -175,33 +175,62 @@ void TLC59116::LEDGroup(uint8_t LED)
 }
 // --------------------------------------------------------------------
 
-// Datasheet 9.5.3
+// Datasheet 9.6.3
 void TLC59116::setPWM(uint8_t pin, uint8_t duty)
 {
   writeToDevice(PWM0 + pin, duty);
 }
 
-// Datasheet 9.5.4
+// Datasheet 9.6.4
+
+/**
+ *  When DMBLNK bit is set to 0 (MODE2 register), a 190 Hz signal is superimposed on the PWM signal.
+ *  GRPPWM register sets the duty cycle of the overall global brightness control.
+ * Allowing the LEDs to be dimmed with the same value. The value of GRPFREQ is don't care.
+ *
+ *  General brightness is control for the 16 outputs from 00h (0%) to FFh (100%).
+ *  This is applicable to LED outputs programmed with LDRx= 11 (LEDOUT0, LEDOUT1, LEDOUT2, LEDOUT3 registers).
+ *
+ */
+
 void TLC59116::setGroupPWM(uint8_t duty)
 {
+  // test if the group mode is already set to global blinking. If so, set it to global PWM.
   if (groupMode == 1)
   {
-    writeToDevice(0x01, 0x00);
-    groupMode = 0;
+    writeToDevice(MODE2, 0x00); // Set the group mode to global PWM
+    groupMode = 0;              // Set the group mode flag to global PWM
   }
+  // Set the global PWM duty cycle with the argument value duty
   writeToDevice(GRPPWM, duty);
 }
 
+/**
+ *  When DMBLNK bit is set to 1 (MODE2 register), the GRPPWM and GRPFREQ registers control the blinking pattern
+ *  GRPFREQ register sets the frequency of the blinking signal from 24Hz to 10.73s. and GPRPWM sets the duty cycle.
+ *  The blinking period is controlled through 256 linear steps from 00h (41 ms, frequency 24 Hz) to FFh (10.73 s).
+ *
+ *  Global blinking period (seconds) = (GRPFREQ + 1) / 24. if blinking period is BLINKPERIOD, then
+ *  we can calculate BLINKPERIOD = (GRPFREQ + 1) / 24. The frequency is 1/BLINKPERIOD.
+ *  GRPFREQ as a function of BLINKPERIOD is GRPFREQ = (BLINKPERIOD * 24) - 1.
+ *  BLINKFREQ is the frequency of the blinking signal in Hz. It is calculated as 1/BLINKPERIOD.
+ *  BLINKFREQ as a function of GRPFREQ is BLINKFREQ = 1 / ((GRPFREQ + 1) / 24).
+ *  Then GRPFREQ as a function of BLINKFREQ is GRPFREQ = (24 / BLINKFREQ) - 1.
+ *  @param freq: The blinking frequency parameter GRPFREQ (From 0x00 to 0xFF).
+ *  freq is then setting blinking frequency from 0.0932Hz (0xFF) to 24 Hz (0x00).
+ */
+
 void TLC59116::setGroupBlink(uint8_t freq, uint8_t duty)
 {
-  setGroupPWM(duty);
-  if (groupMode == 0)
+  setGroupPWM(duty);  // Set the global PWM duty cycle with the argument value duty
+  if (groupMode == 0) // test if the group mode is already set to global PWM. If so, set it to global blinking.
   {
-    writeToDevice(0x01, 0x20);
-    groupMode = 1;
+    // bit 5 of the MODE2 register is the DMBLNK bit. Set it to 1 to enable global blinking.
+    writeToDevice(MODE2, 0x20); // Set the group mode to global blinking
+    groupMode = 1;              // Set the group mode flag to global blinking
   }
 
-  writeToDevice(GRPFREQ, freq);
+  writeToDevice(GRPFREQ, freq); // Set the global blinking frequency with the argument value freq
 }
 
 // Datasheet 9.5.2
